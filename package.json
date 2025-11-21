@@ -1,0 +1,21 @@
+{
+  "name": "@amanx/create-convex-next",
+  "version": "0.0.1",
+  "description": "A CLI to scaffold a full-stack Next.js 15 + Convex + Clerk + DodoPayments starter.",
+  "bin": {
+    "create-convex-next": "bin/index.js"
+  },
+  "type": "module",
+  "main": "bin/index.js",
+  "files": [
+    "bin",
+    "src",
+    "templates"
+  ],
+  "dependencies": {
+    "inquirer": "^9.2.12",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1",
+    "fs-extra": "^11.2.0"
+  }
+}
