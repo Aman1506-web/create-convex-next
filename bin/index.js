@@ -3,30 +3,47 @@
 import { runPrompts } from "../src/prompts.js";
 import { scaffoldProject } from "../src/scaffold.js";
 import { installDeps } from "../src/installer.js";
-import { logInfo, logSuccess } from "../src/logger.js";
+import { logInfo, logSuccess, logError } from "../src/logger.js";
+
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs-extra";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function main() {
-  logInfo("🚀 Starting create-convex-next...");
+  try {
+    logInfo("⚡ create-convex-next starting...");
 
-  const answers = await runPrompts();
+    const answers = await runPrompts();
 
-  const projectDir = path.resolve(process.cwd(), answers.projectName);
+    const targetDir = path.join(process.cwd(), answers.projectName);
 
-  await scaffoldProject(projectDir, answers);
+    // Create folder if doesn't exist
+    if (!fs.existsSync(targetDir)) {
+      fs.mkdirSync(targetDir);
+    }
 
-  if (answers.installDeps) {
-    await installDeps(projectDir);
+    logInfo("📁 Creating project structure...");
+
+    // Copy templates based on options
+    await scaffoldProject(targetDir, answers);
+
+    // Install dependencies if selected
+    if (answers.installDeps) {
+      await installDeps(targetDir);
+    }
+
+    logSuccess(`\n🎉 Project created successfully!`);
+    logSuccess(`👉 cd ${answers.projectName}`);
+    logSuccess(`👉 npm run dev`);
+  } catch (err) {
+    logError("❌ Error occurred:");
+    console.error(err);
+    process.exit(1);
   }
-
-  logSuccess("🎉 Project created successfully!");
 }
 
-main().catch((err) => {
-  console.error("❌ CLI Error:", err);
-  process.exit(1);
-});
+main();
+
