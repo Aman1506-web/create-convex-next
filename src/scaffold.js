@@ -1,10 +1,16 @@
+// src/scaffold.js
 import fs from "fs-extra";
 import path from "path";
+import { fileURLToPath } from "url";
 import { logInfo } from "./logger.js";
 import { copyDir } from "./utils/copyDir.js";
+import { mergePackageJson } from "./installer.js";
 
 export async function scaffoldProject(targetDir, answers) {
-  const templateRoot = path.join(path.dirname(new URL(import.meta.url).pathname), "..", "templates");
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+
+  const templateRoot = path.join(__dirname, "..", "templates");
 
   // 1. Base Next.js template
   logInfo("📦 Copying base Next.js template...");
@@ -13,13 +19,25 @@ export async function scaffoldProject(targetDir, answers) {
   // 2. Tailwind
   if (answers.useTailwind) {
     logInfo("🎨 Adding Tailwind...");
-    await copyDir(path.join(templateRoot, "tailwind"), targetDir);
+    await copyDir(path.join(templateRoot, "tailwind"), targetDir, {
+      skipPackageJson: true
+    });
+    mergePackageJson(
+      targetDir,
+      path.join(templateRoot, "tailwind", "package.json")
+    );
   }
 
   // 3. ShadCN
   if (answers.useShadcn) {
     logInfo("✨ Adding ShadCN UI...");
-    await copyDir(path.join(templateRoot, "shadcn"), targetDir);
+    await copyDir(path.join(templateRoot, "shadcn"), targetDir, {
+      skipPackageJson: true
+    });
+    mergePackageJson(
+      targetDir,
+      path.join(templateRoot, "shadcn", "package.json")
+    );
   }
 
   // 4. Convex
@@ -40,6 +58,3 @@ export async function scaffoldProject(targetDir, answers) {
     await copyDir(path.join(templateRoot, "dodo"), targetDir);
   }
 }
-
-
-// templates are empty right now but copy logic is ready

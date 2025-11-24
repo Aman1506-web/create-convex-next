@@ -1,6 +1,29 @@
+// src/installer.js
+import fs from "fs-extra";
+import path from "path";
 import { execSync } from "child_process";
 import { logInfo, logSuccess } from "./logger.js";
-import path from "path";
+
+export function mergePackageJson(targetDir, templatePkgPath) {
+  const projectPkgPath = path.join(targetDir, "package.json");
+
+  const projectPkg = JSON.parse(fs.readFileSync(projectPkgPath, "utf8"));
+  const templatePkg = JSON.parse(fs.readFileSync(templatePkgPath, "utf8"));
+
+  // Merge dependencies safely
+  projectPkg.dependencies = {
+    ...projectPkg.dependencies,
+    ...(templatePkg.dependencies || {})
+  };
+
+  projectPkg.devDependencies = {
+    ...projectPkg.devDependencies,
+    ...(templatePkg.devDependencies || {})
+  };
+
+  // Write back merged package.json
+  fs.writeFileSync(projectPkgPath, JSON.stringify(projectPkg, null, 2));
+}
 
 export async function installDeps(dir) {
   let pkgManager = "npm";
@@ -24,5 +47,3 @@ export async function installDeps(dir) {
 
   logSuccess("✅ Dependencies installed!");
 }
-
-// Main Work of this file is DETECT PKG MANAGER + INSTALL dependencies
