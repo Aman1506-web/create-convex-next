@@ -20,7 +20,7 @@ export async function scaffoldProject(targetDir, answers) {
   if (answers.useTailwind) {
     logInfo("🎨 Adding Tailwind...");
     await copyDir(path.join(templateRoot, "tailwind"), targetDir, {
-      skipPackageJson: true
+      skipPackageJson: true,
     });
     mergePackageJson(
       targetDir,
@@ -32,7 +32,7 @@ export async function scaffoldProject(targetDir, answers) {
   if (answers.useShadcn) {
     logInfo("✨ Adding ShadCN UI...");
     await copyDir(path.join(templateRoot, "shadcn"), targetDir, {
-      skipPackageJson: true
+      skipPackageJson: true,
     });
     mergePackageJson(
       targetDir,
@@ -49,7 +49,13 @@ export async function scaffoldProject(targetDir, answers) {
   // 5. Clerk
   if (answers.useClerk) {
     logInfo("🔐 Adding Clerk Auth...");
-    await copyDir(path.join(templateRoot, "clerk"), targetDir);
+    await copyDir(path.join(templateRoot, "clerk"), targetDir, {
+      skipPackageJson: true,
+    });
+    mergePackageJson(
+      targetDir,
+      path.join(templateRoot, "clerk", "package.json")
+    );
   }
 
   // 6. Dodo Payments
