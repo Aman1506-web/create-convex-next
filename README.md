@@ -35,6 +35,7 @@ pnpm dev
 - Optional overlays:
   - Tailwind: adds config and deps.
   - Shadcn: adds UI components/config + deps.
+  - Clerk: adds auth layout wrapper, `/sign-in` + `/sign-up` pages, middleware, and Clerk deps.
   - Convex: copies `templates/convex`.
   - Clerk: copies `templates/clerk`.
   - DodoPayments: copies `templates/dodo`.
@@ -45,6 +46,12 @@ pnpm dev
 - `src/scaffold.js`: copies base + selected feature templates; merges `package.json` deps for overlays to avoid overwriting the base.
 - `src/installer.js`: merges package.json files; chooses pnpm → yarn → npm to install.
 - `src/utils/copyDir.js`: safe recursive copy with optional `skipPackageJson`.
+
+### Clerk setup in generated app
+- After scaffolding with Clerk enabled, rename `.env.example` to `.env.local` and set:
+  - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=...`
+  - `CLERK_SECRET_KEY=...`
+- Start dev server (`pnpm dev`) and visit `/sign-in` or `/sign-up`. The header also shows `SignIn/SignUp/UserButton` by default.
 
 ### Notes
 - The homepage text uses `replace_project_name`; swap it after scaffolding.
