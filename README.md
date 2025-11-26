@@ -53,6 +53,14 @@ pnpm dev
   - `CLERK_SECRET_KEY=...`
 - Start dev server (`pnpm dev`) and visit `/sign-in` or `/sign-up`. The header also shows `SignIn/SignUp/UserButton` by default.
 
+### Convex + Clerk setup in generated app
+- Copy `.env.example` to `.env.local` and fill all keys (Next base, Clerk, Convex).
+- Run `npx convex dev` to generate `_generated` files.
+- In Clerk dashboard, create a Convex JWT template and grab the issuer domain: [docs](https://docs.convex.dev/auth/clerk#get-started).
+- In Clerk dashboard, add a webhook pointing to your Convex deployment’s `/clerk-webhook` and copy the webhook secret: [docs](https://docs.convex.dev/auth/database-auth#set-up-webhooks).
+- Put `CLERK_JWT_ISSUER_DOMAIN` and `CLERK_WEBHOOK_SECRET` into `.env.local`, and also add them to Convex dashboard → Settings → Environment Variables (along with your Convex URL).
+- Re-run `npx convex dev` after updating env vars, then start Next with `pnpm dev`.
+
 ### Notes
 - The homepage text uses `replace_project_name`; swap it after scaffolding.
 - Templates live under `templates/`; edit those to change future scaffolds.
