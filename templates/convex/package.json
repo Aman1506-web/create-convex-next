@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "convex": "^1.27.5",
+    "svix": "^1.77.0"
+  }
+}
