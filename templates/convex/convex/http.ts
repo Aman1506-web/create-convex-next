@@ -1,3 +1,4 @@
+// Clerk webhook endpoint. Verifies Svix headers and syncs users into Convex.
 import { httpRouter } from "convex/server";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { Webhook } from "svix";
@@ -21,7 +22,7 @@ http.route({
 
     if (!svix_id || !svix_signature || !svix_timestamp) {
       return new Response("No svix headers found", {
-        status: 400
+        status: 400,
       });
     }
 
@@ -35,7 +36,7 @@ http.route({
       evt = wh.verify(body, {
         "svix-id": svix_id,
         "svix-timestamp": svix_timestamp,
-        "svix-signature": svix_signature
+        "svix-signature": svix_signature,
       }) as WebhookEvent;
     } catch (err) {
       console.error("Error verifying webhook:", err);
@@ -44,6 +45,7 @@ http.route({
 
     const eventType = evt.type;
 
+    // Handle user.created -> sync user; extend for other events as needed.
     if (eventType === "user.created") {
       const { id, first_name, last_name, image_url, email_addresses } =
         evt.data;
@@ -56,7 +58,7 @@ http.route({
           email,
           name,
           image: image_url,
-          clerkId: id
+          clerkId: id,
         });
       } catch (error) {
         console.log("Error creating user:", error);
@@ -65,7 +67,7 @@ http.route({
     }
 
     return new Response("webhook processed successfully", { status: 200 });
-  })
+  }),
 });
 
 export default http;
