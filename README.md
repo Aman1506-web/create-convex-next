@@ -55,6 +55,7 @@ pnpm dev
 
 ### Convex + Clerk setup in generated app
 - Copy `.env.example` to `.env.local` and fill all keys (Next base, Clerk, Convex).
+- ConvexClientProvider note: components/ConvexClientProvider.tsx is a stub by default; when Convex is selected, the Convex overlay overwrites it with the real provider. app/layout.tsx always imports it—no-op without Convex, real provider with Convex (requires NEXT_PUBLIC_CONVEX_URL).
 - Run `npx convex dev` to generate `_generated` files.
 - In Clerk dashboard, create a Convex JWT template and grab the issuer domain: [docs](https://docs.convex.dev/auth/clerk#get-started).
 - In Clerk dashboard, add a webhook pointing to your Convex deployment’s `/clerk-webhook` and copy the webhook secret: [docs](https://docs.convex.dev/auth/database-auth#set-up-webhooks).
